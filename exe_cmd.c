@@ -8,12 +8,13 @@ void exe_cmd(char **argv)
 {
 extern char **environ;
 char *cmd = NULL;
+char *full_path = NULL;
+char *token;
 char *path = getenv("PATH");
 if (argv != NULL)
 {
 cmd = argv[0];
-char *full_path = NULL;
-char *token = strtok(path, ":");
+token = strtok(path, ":");
 while (token != NULL)
 {
 full_path = malloc(strlen(token) + strlen(cmd) + 2);

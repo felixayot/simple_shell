@@ -6,7 +6,7 @@
  * @exec_argv: string char
  * Return: 0 (Success)
  */
-int str_tokens(char *buff, char *separator, char **exec_argv)
+int str_tokens(char *buff, const char *separator, char **exec_argv)
 {
 char *buff_cpy = NULL;
 char *tok;

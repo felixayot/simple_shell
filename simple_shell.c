@@ -9,14 +9,11 @@
 int main(int argc, char *argv[])
 {
 char *buff = NULL;
-char *buff_cpy = NULL;
 char *prompt = "simpsh$ ";
 ssize_t inputsize;
 size_t cmdsize = 0;
 const char *separator = " \n";
-int tok_count = 0;
-char *tok;
-int indx, i;
+int i;
 pid_t pid;
 int is_redir = !isatty(STDIN_FILENO);
 char **exec_argv;
@@ -34,7 +31,7 @@ if (!is_redir && isatty(STDOUT_FILENO))
 {
 write(STDIN_FILENO, prompt, strlen(prompt));
 }
-if (getline(&buff, &cmdsize, stdin) == -1)
+inputsize = getline(&buff, &cmdsize, stdin);
 {
 if (!is_redir && isatty(STDOUT_FILENO))
 {
@@ -46,7 +43,8 @@ return (-1);
 }
 }
 if (inputsize <= 1)
-{ /* End the loop if end of input is reached */
+{
+/* End the loop if end of input is reached */
 continue;
 }
 inputsize = strlen(buff);
