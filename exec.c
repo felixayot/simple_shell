@@ -18,7 +18,11 @@ int exec(char *cmd)
 
 	if (strcmp(cmd, "exit") == 0)
 	{
-		exit(0);
+		return (-1);
+	}
+	if (access(cmd, F_OK) == -1)
+	{
+		return (-1);
 	}
 	pid = fork();
 
@@ -29,7 +33,7 @@ int exec(char *cmd)
 	}
 	else if (pid == 0)
 	{
-		char *argv[3];
+		char *argv[4];
 
 		argv[0] = "/bin/sh";
 		argv[1] = "-c";

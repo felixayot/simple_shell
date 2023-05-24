@@ -11,9 +11,9 @@
 void shell_l(void)
 {
 	char *len;
-	int stat = 1;
 	int i = 0;
-	int exit = 1;
+	int exit = 0;
+	int stat = 1;
 
 	while (stat)
 	{
@@ -37,6 +37,7 @@ void shell_l(void)
 		{
 			break;
 		}
+
 		stat = exec(len);
 
 		free(len);
