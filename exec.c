@@ -18,7 +18,7 @@ int exec(char *cmd)
 
 	if (strcmp(cmd, "exit") == 0)
 	{
-		return (-1);
+		exit(0);
 	}
 	pid = fork();
 
