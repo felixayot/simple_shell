@@ -37,9 +37,18 @@ void shell_l(void)
 		{
 			break;
 		}
-
-		stat = exec(len);
-
+		if (strcmp(len, "exit\n") == 0)
+		{
+			break;
+		}
+		else if (strcmp(len, "ls\n") == 0)
+		{
+			system("/bin/ls");
+		}
+		else
+		{
+			stat = exec(len);
+		}
 		free(len);
 	}
 }
