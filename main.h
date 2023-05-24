@@ -13,5 +13,6 @@
 void exe_cmd(char **argv);
 extern char **environ;
 int str_tokens(char *buff, const char *separator, char **exec_argv);
+int _putchar(char c);
 
 #endif

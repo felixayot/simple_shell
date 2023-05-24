@@ -37,7 +37,7 @@ if (!is_redir && isatty(STDOUT_FILENO))
 {
 if (inputsize == -1)
 {
-printf("\n");
+_putchar('\n');
 return (-1);
 }
 }
