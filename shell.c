@@ -1,8 +1,4 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 /**
  * shell_l - function that runs the shell. It reads and executes the shell
  *
@@ -19,7 +15,6 @@ void shell_l(void)
 	{
 		prompt();
 		len = read_cmd();
-
 		if (!len)
 		{
 			break;
