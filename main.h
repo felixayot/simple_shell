@@ -3,8 +3,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stddef.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/wait.h>
+#include <sys/types.h>
 
 void env(void);
 extern char **environ;
@@ -13,6 +16,5 @@ void shell_l(void);
 void prompt(void);
 int exec(char *cmd);
 char *cmd_path(char *cmd);
-int _putchar(char c);
 
 #endif

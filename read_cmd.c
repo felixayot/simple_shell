@@ -14,7 +14,7 @@ char *read_cmd(void)
 
 	if (readline == -1)
 	{
-	_putchar('\n');
+	printf("\n");
 		if (feof(stdin))
 		{
 			free(len);
