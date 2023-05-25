@@ -20,10 +20,6 @@ int exec(char *cmd)
 	{
 		return (-1);
 	}
-	if (access(cmd, F_OK) == -1)
-	{
-		return (-1);
-	}
 	pid = fork();
 
 	if (pid == -1)
@@ -33,7 +29,7 @@ int exec(char *cmd)
 	}
 	else if (pid == 0)
 	{
-		char *argv[4];
+		char *argv[3];
 
 		argv[0] = "/bin/sh";
 		argv[1] = "-c";
