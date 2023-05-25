@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
 #include "main.h"
-#include <string.h>
-
 /**
  * cmd_path - A funtion that handles the path
  * @cmd: Pointer to the command we are checking

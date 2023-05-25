@@ -1,8 +1,4 @@
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "main.h"
-
 /**
  * prompt - Function that displays our prompt
  *

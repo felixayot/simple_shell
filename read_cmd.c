@@ -1,8 +1,4 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
 /**
  * read_cmd - Function that reads the line of command that the user inputs
  *
@@ -18,7 +14,7 @@ char *read_cmd(void)
 
 	if (readline == -1)
 	{
-
+	_putchar('\n');
 		if (feof(stdin))
 		{
 			free(len);

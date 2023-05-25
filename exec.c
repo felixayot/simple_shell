@@ -1,11 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "main.h"
-#include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-
 /**
  * exec - A Function that executes the command
  * @cmd: Pointer to the command a user inputs
