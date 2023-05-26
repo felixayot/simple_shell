@@ -1,86 +1,93 @@
 #include "main.h"
+
 /**
- * cpy_envr - Function prototype
- * Description: returns a copy of the env var as a str array
- * @i: struct
- * Return: 0 (Success)
+ * get_environ - returns the string array copy of our environ
+ * @info: Structure containing potential arguments. Used to maintain
+ *          constant function prototype.
+ * Return: Always 0
  */
-char **cpy_envr(simpsh_t *i)
+char **get_environ(info_t *info)
 {
-if (!i->envr || i->newenviron)
+if (!info->environ || info->env_changed)
 {
-i->envr = list_to_strings(i->envt);
-i->newenviron = 0;
+info->environ = list_to_strings(info->env);
+info->env_changed = 0;
 }
-return (i->envr);
+
+return (info->environ);
 }
+
 /**
- * custom_unsetenv - Function prototype
- * Description: Removes an env var specified by v
- * @i: struct
- * @v: char string
- * Return: 1 (Success) or 0 (Failure)
+ * _unsetenv - Remove an environment variable
+ * @info: Structure containing potential arguments. Used to maintain
+ *        constant function prototype.
+ *  Return: 1 on delete, 0 otherwise
+ * @var: the string env var property
  */
-int custom_unsetenv(simpsh_t *i, char *v)
+int _unsetenv(info_t *info, char *var)
 {
-list_t *node = i->envt;
-size_t indx = 0;
-char *ptr;
-if (!node || !v)
+list_t *node = info->env;
+size_t i = 0;
+char *p;
+
+if (!node || !var)
 return (0);
+
 while (node)
 {
-ptr = str_str(node->str, v);
-if (ptr && *ptr == '=')
+p = starts_with(node->str, var);
+if (p && *p == '=')
 {
-i->newenviron = delete_node_at_index(&(i->envt), indx);
-indx = 0;
-node = i->envt;
+info->env_changed = delete_node_at_index(&(info->env), i);
+i = 0;
+node = info->env;
 continue;
 }
 node = node->next;
-indx++;
+i++;
 }
-return (i->newenviron);
+return (info->env_changed);
 }
+
 /**
- * custom_setenv - Function prototype
- * Description: Initialize a new env var, or modify an existing one
- * @i: struct
- * @v: char string
- * @content: char string
- *  Return: 0 (Success)
+ * _setenv - Initialize a new environment variable,
+ *             or modify an existing one
+ * @info: Structure containing potential arguments. Used to maintain
+ *        constant function prototype.
+ * @var: the string env var property
+ * @value: the string env var value
+ *  Return: Always 0
  */
-int custom_setenv(simpsh_t *i, char *v, char *content)
+int _setenv(info_t *info, char *var, char *value)
 {
-char *line = NULL;
+char *buf = NULL;
 list_t *node;
-char *ptr;
-if (!v || !content)
-{
+char *p;
+
+if (!var || !value)
 return (0);
-line = malloc(_strlen(v) + _strlen(content) + 2);
-if (!line)
+
+buf = malloc(_strlen(var) + _strlen(value) + 2);
+if (!buf)
 return (1);
-}
-_strcpy(line, v);
-_strcat(line, "=");
-_strcat(line, content);
-node = i->envt;
+_strcpy(buf, var);
+_strcat(buf, "=");
+_strcat(buf, value);
+node = info->env;
 while (node)
 {
-ptr = str_str(node->str, v);
-if (ptr && *ptr == '=')
+p = starts_with(node->str, var);
+if (p && *p == '=')
 {
 free(node->str);
-node->str = line;
-i->newenviron = 1;
+node->str = buf;
+info->env_changed = 1;
 return (0);
 }
 node = node->next;
 }
-add_node_end(&(i->envt), line, 0);
-free(line);
-i->newenviron = 1;
+add_node_end(&(info->env), buf, 0);
+free(buf);
+info->env_changed = 1;
 return (0);
 }

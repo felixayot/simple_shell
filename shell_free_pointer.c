@@ -1,15 +1,17 @@
 #include "main.h"
 /**
- * pointer_free - Function prototype
- * Description: frees a pointer
- * @p: pointer address
- * Return: 1 (Success), otherwise 0.
+ * bfree - frees a pointer and NULLs the address
+ * @ptr: address of the pointer to free
+ *
+ * Return: 1 if freed, otherwise 0.
  */
-int pointer_free(void **p)
+int bfree(void **ptr)
 {
-if (p && *p)
-free(*p);
-*p = NULL;
+if (ptr && *ptr)
+{
+free(*ptr);
+*ptr = NULL;
 return (1);
+}
 return (0);
 }

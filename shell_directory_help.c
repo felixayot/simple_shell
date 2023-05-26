@@ -1,90 +1,93 @@
 #include "main.h"
 /**
- * custom_exit - Function prototype
- * Description: exits the shell
- * @i: struct
- * Return: exits with input exit code, or 0
+ * _myexit - exits the shell
+ * @info: Structure containing potential arguments. Used to maintain
+ * constant function prototype.
+ * Return: exits with a given exit status
+ * (0) if info.argv[0] != "exit"
  */
-int custom_exit(simpsh_t *i)
+int _myexit(info_t *info)
 {
-int cod;
-if (i->av[1])
+int exitcheck;
+
+if (info->argv[1]) /* If there is an exit arguement */
 {
-cod = str_num(i->av[1]);
-if (cod == -1)
+exitcheck = _erratoi(info->argv[1]);
+if (exitcheck == -1)
 {
-i->code = 2;
-print_error(i, "Status Unkown: ");
-custom_puts(i->av[1]);
-_putchar('\n');
+info->status = 2;
+print_error(info, "Illegal number: ");
+_eputs(info->argv[1]);
+_eputchar('\n');
 return (1);
 }
-i->err_code = str_num(i->av[1]);
+info->err_num = _erratoi(info->argv[1]);
 return (-2);
 }
-i->err_code = -1;
+info->err_num = -1;
 return (-2);
 }
 /**
- * custom_cd - Function prototype
- * Description: changes the current directory of shell
- * @i: struct
- * Return: 0 (Success)
+ * _mycd - changes the current directory of the process
+ * @info: Structure containing potential arguments. Used to maintain
+ * constant function prototype.
+ * Return: Always 0
  */
-int custom_cd(simpsh_t *i)
+int _mycd(info_t *info)
 {
 char *s, *dir, buffer[1024];
-int cdir;
+int chdir_ret;
+
 s = getcwd(buffer, 1024);
-_puts("sh: 0: getcwd() failed: No such file or directory\n");
-if (!i->av[1])
+if (!s)
+_puts("TODO: >>getcwd failure emsg here<<\n");
+if (!info->argv[1])
 {
-dir = custom_getenv(i, "HOME=");
+dir = _getenv(info, "HOME=");
 if (!dir)
-chdir((dir = custom_getenv(i, "PWD=")) ? dir : "/");
+chdir_ret = /* TODO: what should this be? */
+chdir((dir = _getenv(info, "PWD=")) ? dir : "/");
 else
-cdir = chdir(dir);
+chdir_ret = chdir(dir);
 }
-else if (_strcmp(i->av[1], "-") == 0)
+else if (_strcmp(info->argv[1], "-") == 0)
 {
-if (!custom_getenv(i, "OLDPWD="))
+if (!_getenv(info, "OLDPWD="))
 {
 _puts(s);
 _putchar('\n');
 return (1);
 }
-_puts(custom_getenv(i, "OLDPWD=")), _putchar('\n');
-chdir((dir = custom_getenv(i, "OLDPWD=")) ? dir : "/");
+_puts(_getenv(info, "OLDPWD=")), _putchar('\n');
+chdir_ret = /* TODO: what should this be? */
+chdir((dir = _getenv(info, "OLDPWD=")) ? dir : "/");
 }
 else
-cdir = chdir(i->av[1]);
-if (cdir == -1)
+chdir_ret = chdir(info->argv[1]);
+if (chdir_ret == -1)
 {
-print_error(i, "No such file or directory ");
-custom_puts(i->av[1]), _putchar('\n');
+print_error(info, "can't cd to ");
+_eputs(info->argv[1]), _eputchar('\n');
 }
 else
 {
-custom_setenv(i, "OLDPWD", custom_getenv(i, "PWD="));
-custom_setenv(i, "PWD", getcwd(buffer, 1024));
+_setenv(info, "OLDPWD", _getenv(info, "PWD="));
+_setenv(info, "PWD", getcwd(buffer, 1024));
 }
 return (0);
 }
 /**
- * init_help - Function prototype
- * Description: function is a placeholder for the help command that prints
- * a message indicating that the help command is not yet implemented
- * @i: struct
- * Return: 0 (Success)
+ * _myhelp - changes the current directory of the process
+ * @info: Structure containing potential arguments. Used to maintain
+ * constant function prototype.
+ * Return: Always 0
  */
-int init_help(simpsh_t *i)
+int _myhelp(info_t *info)
 {
-char **pa_ar;
-pa_ar = i->av;
-_puts("help command is not yet implemented\n");
+char **arg_array;
+arg_array = info->argv;
+_puts("help call works. Function not yet implemented \n");
 if (0)
-{
-_puts(*pa_ar);
-}
+_puts(*arg_array); /* temp att_unused workaround */
 return (0);
 }

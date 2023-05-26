@@ -1,73 +1,72 @@
 #include "main.h"
 /**
- * init_simpsh - Function prototype
- * Description: initializes simpsh_t struct
- * @i: struct
- * Return: void
+ * clear_info - initializes info_t struct
+ * @info: struct address
  */
-void init_simpsh(simpsh_t *i)
+void clear_info(info_t *info)
 {
-i->ag = NULL;
-i->av = NULL;
-i->pth = NULL;
-i->ac = 0;
+info->arg = NULL;
+info->argv = NULL;
+info->path = NULL;
+info->argc = 0;
 }
+
 /**
- * set_simpsh - Function prototype
- * Description: initializes simpsh_t struct
- * @i: struct
- * @argv: argument vector
- * Return: void
+ * set_info - initializes info_t struct
+ * @info: struct address
+ * @av: argument vector
  */
-void set_simpsh(simpsh_t *i, char *argv[])
+void set_info(info_t *info, char **av)
 {
-int a = 0;
-i->file_name = argv[0];
-if (i->ag)
+int i = 0;
+
+info->fname = av[0];
+if (info->arg)
 {
-i->av = strtow(i->ag, " \t");
-if (!i->av)
+info->argv = strtow(info->arg, " \t");
+if (!info->argv)
 {
-i->av = malloc(sizeof(char *) * 2);
-if (i->av)
+info->argv = malloc(sizeof(char *) * 2);
+if (info->argv)
 {
-i->av[0] = _strdup(i->ag);
-i->av[1] = NULL;
+info->argv[0] = _strdup(info->arg);
+info->argv[1] = NULL;
 }
 }
-for (a = 0; i->av && i->av[a]; a++)
+for (i = 0; info->argv && info->argv[i]; i++)
 ;
-i->ac = a;
-replace_alias(i);
-replace_variables(i);
+info->argc = i;
+
+replace_alias(info);
+replace_vars(info);
 }
 }
+
 /**
- * free_simpsh - Function prototype
- * Description: frees simpsh_t struct family
- * @i: struct
- * @all: 1 (Success)
- */
-void free_simpsh(simpsh_t *i, int all)
+* free_info - frees info_t struct fields
+* @info: struct address
+* @all: true if freeing all fields
+*/
+void free_info(info_t *info, int all)
 {
-free_str(i->av);
-i->av = NULL;
-i->pth = NULL;
+ffree(info->argv);
+info->argv = NULL;
+info->path = NULL;
 if (all)
 {
-if (!i->buff)
-free(i->ag);
-if (i->envt)
-free_list(&(i->envt));
-if (i->hist)
-free_list(&(i->hist));
-if (i->alias)
-free_list(&(i->alias));
-free_str(i->envr);
-i->envr = NULL;
-pointer_free((void **)i->buff);
-if (i->inputsize > 2)
-close(i->inputsize);
-_putchar(BUFF_F);
+if (!info->cmd_buf)
+free(info->arg);
+if (info->env)
+free_list(&(info->env));
+if (info->history)
+free_list(&(info->history));
+if (info->alias)
+free_list(&(info->alias));
+ffree(info->environ);
+info->environ = NULL;
+bfree((void **)info->cmd_buf);
+if (info->readfd > 2)
+close(info->readfd);
+_putchar(BUF_FLUSH);
 }
 }
