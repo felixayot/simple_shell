@@ -12,7 +12,7 @@ Implementing the concepts of [UNIX shell](https://en.wikipedia.org/wiki/Unix_she
 
 ## Usage
 First, you need to compile the shell using this `gcc` command: `gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh`
-Then you can go ahead and run several shell commands to test the program out. A simple illustration has been shown below.
+Then you can go ahead and run the program using `./hsh` with several shell commands to test the program out. A simple illustration has been shown below.
 
 The shell works like this in an interactive mode:
 ```
@@ -42,5 +42,5 @@ $
 - ***Felix Ayot*** < felixayot@gmail.com >
 - ***Brian Kamau*** < bmaina031@gmail.com >
 
-# Acknowledgments
+# Acknowledgements
 - ALX SE program provided the resources and project guidance. More information on this amazing program can be found through this [link](https://www.alxafrica.com/).
