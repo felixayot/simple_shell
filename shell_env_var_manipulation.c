@@ -6,7 +6,7 @@
  *          constant function prototype.
  * Return: Always 0
  */
-char **get_environ(info_t *info)
+char **get_environ(simpsh_t *info)
 {
 if (!info->environ || info->env_changed)
 {
@@ -24,7 +24,7 @@ return (info->environ);
  *  Return: 1 on delete, 0 otherwise
  * @var: the string env var property
  */
-int _unsetenv(info_t *info, char *var)
+int _unsetenv(simpsh_t *info, char *var)
 {
 list_t *node = info->env;
 size_t i = 0;
@@ -58,7 +58,7 @@ return (info->env_changed);
  * @value: the string env var value
  *  Return: Always 0
  */
-int _setenv(info_t *info, char *var, char *value)
+int _setenv(simpsh_t *info, char *var, char *value)
 {
 char *buf = NULL;
 list_t *node;

@@ -6,7 +6,7 @@
  *
  * Return: 1 if true, 0 otherwise
  */
-int is_cmd(info_t *info, char *path)
+int is_cmd(simpsh_t *info, char *path)
 {
 struct stat st;
 
@@ -49,7 +49,7 @@ return (buf);
  *
  * Return: full path of cmd if found or NULL
  */
-char *find_path(info_t *info, char *pathstr, char *cmd)
+char *find_path(simpsh_t *info, char *pathstr, char *cmd)
 {
 int i = 0, curr_pos = 0;
 char *path;

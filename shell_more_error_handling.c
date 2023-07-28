@@ -34,7 +34,7 @@ return (result);
  * Return: 0 if no numbers in string, converted number otherwise
  *        -1 on error
  */
-void print_error(info_t *info, char *estr)
+void print_error(simpsh_t *info, char *estr)
 {
 _eputs(info->fname);
 _eputs(": ");

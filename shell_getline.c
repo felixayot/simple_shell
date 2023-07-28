@@ -7,7 +7,7 @@
  *
  * Return: bytes read
  */
-ssize_t input_buf(info_t *info, char **buf, size_t *len)
+ssize_t input_buf(simpsh_t *info, char **buf, size_t *len)
 {
 ssize_t r = 0;
 size_t len_p = 0;
@@ -27,13 +27,13 @@ if (r > 0)
 {
 if ((*buf)[r - 1] == '\n')
 {
-(*buf)[r - 1] = '\0'; /* remove trailing newline */
+(*buf)[r - 1] = '\0'; /* Remove trailing newline */
 r--;
 }
 info->linecount_flag = 1;
 remove_comments(*buf);
 build_history_list(info, *buf, info->histcount++);
-/* if (_strchr(*buf, ';')) is this a command chain? */
+/* if (_strchr(*buf, ';')) Is this a command chain? */
 {
 *len = r;
 info->cmd_buf = buf;
@@ -49,7 +49,7 @@ return (r);
  *
  * Return: bytes read
  */
-ssize_t get_input(info_t *info)
+ssize_t get_input(simpsh_t *info)
 {
 static char *buf; /* the ';' command chain buffer */
 static size_t i, j, len;
@@ -96,7 +96,7 @@ return (r); /* return length of buffer from _getline() */
  *
  * Return: r
  */
-ssize_t read_buf(info_t *info, char *buf, size_t *i)
+ssize_t read_buf(simpsh_t *info, char *buf, size_t *i)
 {
 ssize_t r = 0;
 
@@ -116,7 +116,7 @@ return (r);
  *
  * Return: s
  */
-int _getline(info_t *info, char **ptr, size_t *length)
+int _getline(simpsh_t *info, char **ptr, size_t *length)
 {
 static char buf[READ_BUF_SIZE];
 static size_t i, len;

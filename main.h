@@ -11,6 +11,7 @@
 #include <limits.h>
 #include <fcntl.h>
 #include <errno.h>
+
 #define READ_BUF_SIZE 1024
 #define WRITE_BUF_SIZE 1024
 #define BUF_FLUSH -1
@@ -22,7 +23,6 @@
 #define CONVERT_UNSIGNED	2
 #define USE_GETLINE 0
 #define USE_STRTOK 0
-
 #define HIST_FILE	".simple_shell_history"
 #define HIST_MAX	4096
 
@@ -41,7 +41,7 @@ typedef struct liststr
 } list_t;
 
 /**
- * struct passinfo - contains pseudo-arguements to pass into a function,
+ * struct simpsh_info - contains pseudo-arguments to pass into a function,
  * allowing uniform prototype for function pointer struct
  * @arg: a string generated from getline containing arguements
  * @argv:an array of strings generated from arg
@@ -62,7 +62,7 @@ typedef struct liststr
  * @readfd: the fd from which to read line input
  * @histcount: the history line number count
  */
-typedef struct passinfo
+typedef struct simpsh_info
 {
 	char *arg;
 	char **argv;
@@ -83,7 +83,7 @@ typedef struct passinfo
 	int cmd_buf_type;
 	int readfd;
 	int histcount;
-} info_t;
+} simpsh_t;
 
 #define INFO_INIT \
 {NULL, NULL, NULL, 0, 0, 0, 0, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, \
@@ -97,85 +97,130 @@ typedef struct passinfo
 typedef struct builtin
 {
 	char *type;
-	int (*func)(info_t *);
+	int (*func)(simpsh_t *info);
 } builtin_table;
-int hsh(info_t *, char **);
-int find_builtin(info_t *);
-void find_cmd(info_t *);
-void fork_cmd(info_t *);
-int is_cmd(info_t *, char *);
-char *dup_chars(char *, int, int);
-char *find_path(info_t *, char *, char *);
-int loophsh(char **);
-void _eputs(char *);
-int _eputchar(char);
+
+/* SHELL_MAIN_LOOP FUNCTION PROTOTYPES */
+int hsh(simpsh_t *info, char **av);
+int find_builtin(simpsh_t *info);
+void find_cmd(simpsh_t *info);
+void fork_cmd(simpsh_t *info);
+
+/* SHELL_LOCATE_EXE FUNCTION PROTOTYPES */
+int is_cmd(simpsh_t *info, char *path);
+char *dup_chars(char *pathstr, int start, int stop);
+char *find_path(simpsh_t *info, char *pathstr, char *cmd);
+
+/* SHELL_ERROR_STRINGS FUNCTION PROTOTYPES */
+void _eputs(char *str);
+int _eputchar(char c);
 int _putfd(char c, int fd);
 int _putsfd(char *str, int fd);
-int _strlen(char *);
-int _strcmp(char *, char *);
-char *starts_with(const char *, const char *);
-char *_strcat(char *, char *);
-char *_strcpy(char *, char *);
-char *_strdup(const char *);
-void _puts(char *);
-int _putchar(char);
-char *_strncpy(char *, char *, int);
-char *_strncat(char *, char *, int);
-char *_strchr(char *, char);
-char **strtow(char *, char *);
-char **strtow2(char *, char);
-char *_memset(char *, char, unsigned int);
-void ffree(char **);
-void *_realloc(void *, unsigned int, unsigned int);
+
+/* SHELL_STRING_COPYING FUNCTION PROTOTYPES */
+char *_strcpy(char *dest, char *src);
+char *_strdup(const char *str);
+void _puts(char *str);
+int _putchar(char c);
+
+/* SHELL_STRING_MANIPULATION FUNCTION PROTOTYPES */
+int _strlen(char *s);
+int _strcmp(char *s1, char *s2);
+char *starts_with(const char *haystack, const char *needle);
+char *_strcat(char *dest, char *src);
+
+/* SHELL_MORE_STRING_MANIPULATION FUNCTION PROTOTYPES */
+char *_strncpy(char *dest, char *src, int n);
+char *_strncat(char *dest, char *src, int n);
+char *_strchr(char *s, char c);
+
+/* SHELL_STRING_TOKENS FUNCTION PROTOTYPES */
+char **strtow(char *str, char *d);
+char **strtow2(char *str, char d);
+
+/* SHELL_MEM_MNGT FUNCTION PROTOTYPES */
+char *_memset(char *s, char b, unsigned int n);
+void ffree(char **pp);
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size);
+
+/* SHELL_FREE_POINTER FUNCTION PROTOTYPE */
 int bfree(void **);
-int interactive(info_t *);
-int is_delim(char, char *);
-int _isalpha(int);
-int _atoi(char *);
-int _erratoi(char *);
-void print_error(info_t *, char *);
-int print_d(int, int);
-char *convert_number(long int, int, int);
-void remove_comments(char *);
-int _myexit(info_t *);
-int _mycd(info_t *);
-int _myhelp(info_t *);
-int _myhistory(info_t *);
-int _myalias(info_t *);
-ssize_t get_input(info_t *);
-int _getline(info_t *, char **, size_t *);
-void sigintHandler(int);
-void clear_info(info_t *);
-void set_info(info_t *, char **);
-void free_info(info_t *, int);
-char *_getenv(info_t *, const char *);
-int _myenv(info_t *);
-int _mysetenv(info_t *);
-int _myunsetenv(info_t *);
-int populate_env_list(info_t *);
-char **get_environ(info_t *);
-int _unsetenv(info_t *, char *);
-int _setenv(info_t *, char *, char *);
-char *get_history_file(info_t *info);
-int write_history(info_t *info);
-int read_history(info_t *info);
-int build_history_list(info_t *info, char *buf, int linecount);
-int renumber_history(info_t *info);
-list_t *add_node(list_t **, const char *, int);
-list_t *add_node_end(list_t **, const char *, int);
-size_t print_list_str(const list_t *);
-int delete_node_at_index(list_t **, unsigned int);
-void free_list(list_t **);
-size_t list_len(const list_t *);
-char **list_to_strings(list_t *);
-size_t print_list(const list_t *);
-list_t *node_starts_with(list_t *, char *, char);
-ssize_t get_node_index(list_t *, list_t *);
-int is_chain(info_t *, char *, size_t *);
-void check_chain(info_t *, char *, size_t *, size_t, size_t);
-int replace_alias(info_t *);
-int replace_vars(info_t *);
-int replace_string(char **, char *);
 
-#endif
+/* SHELL_SIGNATURE FUNCTION PROTOTYPES */
+int interactive(simpsh_t *info);
+int is_delim(char c, char *delim);
+int _isalpha(int c);
+int _atoi(char *s);
 
+/* SHELL_MORE_ERROR_HANDLING FUNCTION PROTOTYPES */
+int _erratoi(char *s);
+void print_error(simpsh_t *info, char *estr);
+int print_d(int input, int fd);
+char *convert_number(long int num, int base, int flags);
+void remove_comments(char *buf);
+
+/* SHELL_DIRECTORY_HELP FUNCTION PROTOTYPES */
+int _myexit(simpsh_t *info);
+int _mycd(simpsh_t *info);
+int _myhelp(simpsh_t *info);
+
+/* SHELL_ALIAS_MNGT FUNCTION PROTOTYPES */
+int _myhistory(simpsh_t *info);
+int set_alias(simpsh_t *info, char *str);
+int unset_alias(simpsh_t *info, char *str);
+int _myalias(simpsh_t *info);
+int print_alias(list_t *node);
+
+/* SHELL_GETLINE FUNCTION PROTOTYPES */
+ssize_t input_buf(simpsh_t *info, char **buf, size_t *len);
+ssize_t get_input(simpsh_t *info);
+ssize_t read_buf(simpsh_t *info, char *buf, size_t *i);
+int _getline(simpsh_t *info, char **ptr, size_t *length);
+void sigintHandler(int sig_num);
+
+/* SHELL_INIT_STRUCT FUNCTION PROTOTYPES */
+void clear_info(simpsh_t *info);
+void set_info(simpsh_t *info, char **av);
+void free_info(simpsh_t *info, int all);
+
+/* SHELL_ENV_VARIABLES FUNCTION PROTOTYPES */
+char *_getenv(simpsh_t *info, const char *name);
+int _myenv(simpsh_t *info);
+int _mysetenv(simpsh_t *info);
+int _myunsetenv(simpsh_t *info);
+int populate_env_list(simpsh_t *info);
+
+/* SHELL_ENV_VAR_MANIPULATION FUNCTION PROTOTYPES */
+char **get_environ(simpsh_t *info);
+int _unsetenv(simpsh_t *info, char *var);
+int _setenv(simpsh_t *info, char *var, char *value);
+
+/* SHELL_HISTORY_MNGT FUNCTION PROTOTYPES */
+char *get_history_file(simpsh_t *info);
+int write_history(simpsh_t *info);
+int read_history(simpsh_t *info);
+int build_history_list(simpsh_t *info, char *buf, int linecount);
+int renumber_history(simpsh_t *info);
+
+/* SHELL_LINKED_LIST_MNGT FUNCTION PROTOTYPES */
+list_t *add_node(list_t **head, const char *str, int num);
+list_t *add_node_end(list_t **head, const char *str, int num);
+size_t print_list_str(const list_t *h);
+int delete_node_at_index(list_t **head, unsigned int index);
+void free_list(list_t **head_ptr);
+
+/* SHELL_MORE_LINKED_LIST FUNCTION PROTOTYPES */
+size_t list_len(const list_t *h);
+char **list_to_strings(list_t *head);
+size_t print_list(const list_t *h);
+list_t *node_starts_with(list_t *node, char *prefix, char c);
+ssize_t get_node_index(list_t *head, list_t *node);
+
+/* SHELL_LOGIC_OPS FUNCTION PROTOTYPES */
+int is_chain(simpsh_t *info, char *buf, size_t *p);
+void check_chain(simpsh_t *info, char *buf, size_t *p, size_t i, size_t len);
+int replace_alias(simpsh_t *info);
+int replace_vars(simpsh_t *info);
+int replace_string(char **old, char *new);
+
+#endif /* _MAIN_H_ */
